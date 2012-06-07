@@ -1,10 +1,10 @@
 package nu.ganslandt.util.throttle;
 
-public class DelayingThrottler extends Throttle {
+public class DelayingThrottle extends Throttle {
     /**
      * Creates a new throttle that throws an exception if the throttle is exceeded
      */
-    public DelayingThrottler(int requestPerSecond) {
+    public DelayingThrottle(int requestPerSecond) {
         super(requestPerSecond);
     }
 
