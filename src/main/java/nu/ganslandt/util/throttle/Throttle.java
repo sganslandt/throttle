@@ -7,18 +7,39 @@ import java.util.concurrent.TimeUnit;
 public abstract class Throttle {
 
     protected DelayQueue<Token> tokenBucket;
-    private final int requestPerSecond;
+    private long requestPerSecond;
+    private ThrottleStats stats;
 
     public Throttle(int requestPerSecond) {
         this.requestPerSecond = requestPerSecond;
+        this.stats = new ThrottleStats();
         this.tokenBucket = new DelayQueue<Token>();
     }
 
     public void throttle() {
-        if (tokenBucket.size() >= requestPerSecond)
+        stats.addRequest();
+        if (tokenBucket.size() >= requestPerSecond) {
+            stats.addThrottledRequest();
             doThrottle();
+        }
 
         handleRequest();
+    }
+
+    public long getRequestPerSecond() {
+        return requestPerSecond;
+    }
+
+    public void setRequestPerSecond(long requestPerSecond) {
+        this.requestPerSecond = requestPerSecond;
+    }
+
+    public void clearStats() {
+        this.stats = new ThrottleStats();
+    }
+
+    public ThrottleStats getStats() {
+        return stats;
     }
 
     protected abstract void doThrottle();
